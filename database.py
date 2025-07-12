@@ -56,16 +56,17 @@ def create_tables():
 
 def insert_data(data):
     values = []
-    for videokard in data.values():
-        new_videokard = VideokardsORM(code=int(videokard['code']),
-                                      guid=videokard['guid'],
-                                      name=videokard['name'],
-                                      description=videokard['description'],
-                                      price=float(videokard['price']),
-                                      imageUrl=videokard['imageUrl'],
-                                      characteristics=json.dumps(videokard['characteristics'], ensure_ascii=False)
+    for result in [elem.values() for elem in data]:
+        for videokard in result:
+            new_videokard = VideokardsORM(code=int(videokard['data']['code']),
+                                          guid=videokard['data']['guid'],
+                                          name=videokard['data']['name'],
+                                          description=videokard['data']['description'],
+                                          price=float(videokard['data']['price']),
+                                          imageUrl=videokard['data']['imageUrl'],
+                                          characteristics=json.dumps(videokard['data']['characteristics'], ensure_ascii=False)
                                       )
-        values.append(new_videokard)
+            values.append(new_videokard)
     with session_factory() as session:
         session.add_all(values)
         session.commit()
