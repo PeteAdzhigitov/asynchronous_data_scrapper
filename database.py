@@ -1,8 +1,8 @@
-import asyncio
-from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase
+
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy import create_engine, text, insert
-from tenacity import RetryError
+from sqlalchemy import create_engine
+
 
 from config import settings
 from models import VideokardsORM, Base
@@ -10,16 +10,16 @@ import json
 
 
 sync_engine = create_engine(url=settings.database_url_psycopg,
-                       echo=True,
-                       # pool_size=5,
-                       # max_overflow=10
-                       )
+                            echo=True,
+                            # pool_size=5,
+                            # max_overflow=10
+                            )
 
 async_engine = create_async_engine(url=settings.database_url_asyncpg,
-                       echo=True,
-                       # pool_size=5,
-                       # max_overflow=10
-                        )
+                                   echo=True,
+                                   # pool_size=5,
+                                   # max_overflow=10
+                                   )
 
 # with sync_engine.connect() as conn:
 #     res = conn.execute(text("SELECT VERSION()"))
@@ -34,6 +34,7 @@ async_engine = create_async_engine(url=settings.database_url_asyncpg,
 # asyncio.run(get_async_engine())
 
 session_factory = sessionmaker(sync_engine)
+
 
 def create_tables():
     sync_engine.echo = False
@@ -56,6 +57,7 @@ def create_tables():
 #         conn.execute(stmt)
 #         conn.commit()
 
+
 def insert_data(data):
     values = []
     for result in [elem.values() for elem in data if isinstance(elem, dict)]:
@@ -66,10 +68,10 @@ def insert_data(data):
                                           description=videokard['data']['description'],
                                           price=float(videokard['data']['price']),
                                           imageUrl=videokard['data']['imageUrl'],
-                                          characteristics=json.dumps(videokard['data']['characteristics'], ensure_ascii=False)
-                                      )
+                                          characteristics=json.dumps(videokard['data']['characteristics'],
+                                          ensure_ascii=False)
+                                          )
             values.append(new_videokard)
     with session_factory() as session:
         session.add_all(values)
         session.commit()
-
