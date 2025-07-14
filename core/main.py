@@ -17,6 +17,5 @@ def read_item(item_id: int, q: Union[str, None] = None):
 def main():
     create_tables()
 
-
 if __name__ == '__main__':
     main()

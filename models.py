@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from typing import Annotated
 
 
-str256 =Annotated[str, 256]
+str256 = Annotated[str, 256]
 
 class Base(DeclarativeBase):
     type_annotation_map = {

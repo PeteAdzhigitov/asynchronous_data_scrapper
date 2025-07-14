@@ -2,6 +2,8 @@ import asyncio
 from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import create_engine, text, insert
+from tenacity import RetryError
+
 from config import settings
 from models import VideokardsORM, Base
 import json
@@ -56,7 +58,7 @@ def create_tables():
 
 def insert_data(data):
     values = []
-    for result in [elem.values() for elem in data]:
+    for result in [elem.values() for elem in data if isinstance(elem, dict)]:
         for videokard in result:
             new_videokard = VideokardsORM(code=int(videokard['data']['code']),
                                           guid=videokard['data']['guid'],
